@@ -88,8 +88,10 @@ function create_jenkins_proxy_xml() {
         if [ -n "$no_proxy" ]; then
           export NO_PROXY=$(convert_no_proxy $no_proxy)
         fi
-      fi 
-      envsubst < "${image_config_dir}/proxy.yaml.tpl" > "${image_config_dir}/proxy.yaml"
+        envsubst < "${image_config_dir}/proxy.yaml.tpl" > "${image_config_dir}/proxy.yaml"
+      fi
+      # create an empty proxy.yaml file anyway because it is configured in the template
+      touch ${image_config_dir}/proxy.yaml
     fi
   fi
 }
@@ -120,6 +122,7 @@ function create_jenkins_config_from_templates() {
           create_jenkins_credentials_xml
           ;;
         "${image_config_dir}/proxy.yaml")
+          create_jenkins_proxy_xml
           ;;
         *)
           # Allow usage of environment variables in templated files, e.g. ${DOLLAR}MY_VAR is replaced by $MY_VAR
